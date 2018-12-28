@@ -24,7 +24,7 @@ private:
   Byte m_nameTableMirroring;
   Byte m_mapperNumber;
   bool m_extendedRAM;
-  bool m_chrRAM;
+  // bool m_chrRAM;
 };
 
 }; // namespace sn
