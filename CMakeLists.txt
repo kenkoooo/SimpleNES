@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SimpleNES)
+SET(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
