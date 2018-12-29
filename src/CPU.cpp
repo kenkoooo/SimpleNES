@@ -268,7 +268,7 @@ bool CPU::executeBranch(Byte opcode) {
       int8_t offset = m_bus.read(r_PC++);
       ++m_skipCycles;
       auto newPC = static_cast<Address>(r_PC + offset);
-      setPageCrossed(r_PC, newPC, 2);
+      this->setPageCrossed(r_PC, newPC, 2);
       r_PC = newPC;
     } else
       ++r_PC;
@@ -521,15 +521,14 @@ bool CPU::executeType0(Byte opcode) {
     default:
       return false;
     }
-    std::uint16_t operand = 0;
     switch (
         static_cast<Operation0>((opcode & OperationMask) >> OperationShift)) {
-    case BIT:
-      operand = m_bus.read(location);
+    case BIT: {
+      std::uint16_t operand = m_bus.read(location);
       f_Z = !(r_A & operand);
       f_V = operand & 0x40;
       f_N = operand & 0x80;
-      break;
+    } break;
     case STY:
       m_bus.write(location, r_Y);
       break;
