@@ -36,8 +36,6 @@ private:
 
   sf::RenderWindow m_window;
   VirtualScreen m_emulatorScreen;
-
-  std::chrono::nanoseconds m_cpuCycleDuration;
 };
 } // namespace sn
 #endif // EMULATOR_H

@@ -6,9 +6,8 @@
 
 namespace sn {
 const float ScreenScale = 2.f;
-Emulator::Emulator()
-    : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen),
-      m_cpuCycleDuration(std::chrono::nanoseconds(559)) {
+const std::chrono::nanoseconds CpuCycleDuration = std::chrono::nanoseconds(559);
+Emulator::Emulator() : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen) {
   if (!m_bus.setReadCallback(PPUSTATUS,
                              [&](void) { return m_ppu.getStatus(); }) ||
       !m_bus.setReadCallback(PPUDATA, [&](void) { return m_ppu.getData(); }) ||
@@ -119,7 +118,7 @@ void Emulator::run(std::string rom_path) {
       elapsedTime += std::chrono::high_resolution_clock::now() - cycleTimer;
       cycleTimer = std::chrono::high_resolution_clock::now();
 
-      while (elapsedTime > m_cpuCycleDuration) {
+      while (elapsedTime > CpuCycleDuration) {
         // PPU
         m_ppu.step();
         m_ppu.step();
@@ -127,7 +126,7 @@ void Emulator::run(std::string rom_path) {
         // CPU
         m_cpu.step();
 
-        elapsedTime -= m_cpuCycleDuration;
+        elapsedTime -= CpuCycleDuration;
       }
 
       m_window.draw(m_emulatorScreen);

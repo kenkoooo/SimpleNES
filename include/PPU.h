@@ -44,6 +44,9 @@ private:
   Byte readOAM(Byte addr);
   void writeOAM(Byte addr, Byte value);
   Byte read(Address addr);
+
+  void render();
+
   PictureBus &m_bus;
   VirtualScreen &m_screen;
 
