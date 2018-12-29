@@ -19,9 +19,6 @@ class Emulator {
 public:
   Emulator();
   void run(std::string rom_path);
-  void setVideoWidth(int width);
-  void setVideoHeight(int height);
-  void setVideoScale(float scale);
   void setKeys(std::vector<sf::Keyboard::Key> &p1,
                std::vector<sf::Keyboard::Key> &p2);
 
@@ -39,7 +36,6 @@ private:
 
   sf::RenderWindow m_window;
   VirtualScreen m_emulatorScreen;
-  float m_screenScale;
 
   TimePoint m_cycleTimer;
 

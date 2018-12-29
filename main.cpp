@@ -61,33 +61,6 @@ int main(int argc, char **argv) {
       cpuTraceFile.open("sn.cpudump");
       sn::Log::get().setCpuTraceStream(cpuTraceFile);
       LOG(sn::Info) << "CPU logging set." << std::endl;
-    } else if (std::strcmp(argv[i], "-s") == 0 ||
-               std::strcmp(argv[i], "--scale") == 0) {
-      float scale;
-      std::stringstream ss;
-      if (i + 1 < argc && ss << argv[i + 1] && ss >> scale)
-        emulator.setVideoScale(scale);
-      else
-        LOG(sn::Error) << "Setting scale from argument failed" << std::endl;
-      ++i;
-    } else if (std::strcmp(argv[i], "-w") == 0 ||
-               std::strcmp(argv[i], "--width") == 0) {
-      int width;
-      std::stringstream ss;
-      if (i + 1 < argc && ss << argv[i + 1] && ss >> width)
-        emulator.setVideoWidth(width);
-      else
-        LOG(sn::Error) << "Setting width from argument failed" << std::endl;
-      ++i;
-    } else if (std::strcmp(argv[i], "-H") == 0 ||
-               std::strcmp(argv[i], "--height") == 0) {
-      int height;
-      std::stringstream ss;
-      if (i + 1 < argc && ss << argv[i + 1] && ss >> height)
-        emulator.setVideoHeight(height);
-      else
-        LOG(sn::Error) << "Setting height from argument failed" << std::endl;
-      ++i;
     } else if (argv[i][0] != '-')
       path = argv[i];
     else

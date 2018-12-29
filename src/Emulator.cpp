@@ -5,9 +5,10 @@
 #include <thread>
 
 namespace sn {
+const float ScreenScale = 2.f;
 Emulator::Emulator()
-    : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen), m_screenScale(2.f),
-      m_cycleTimer(), m_cpuCycleDuration(std::chrono::nanoseconds(559)) {
+    : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen), m_cycleTimer(),
+      m_cpuCycleDuration(std::chrono::nanoseconds(559)) {
   if (!m_bus.setReadCallback(PPUSTATUS,
                              [&](void) { return m_ppu.getStatus(); }) ||
       !m_bus.setReadCallback(PPUDATA, [&](void) { return m_ppu.getData(); }) ||
@@ -60,11 +61,11 @@ void Emulator::run(std::string rom_path) {
   m_cpu.reset();
   m_ppu.reset();
 
-  m_window.create(sf::VideoMode(NESVideoWidth * m_screenScale,
-                                NESVideoHeight * m_screenScale),
-                  "SimpleNES", sf::Style::Titlebar | sf::Style::Close);
+  m_window.create(
+      sf::VideoMode(NESVideoWidth * ScreenScale, NESVideoHeight * ScreenScale),
+      "SimpleNES", sf::Style::Titlebar | sf::Style::Close);
   m_window.setVerticalSyncEnabled(true);
-  m_emulatorScreen.create(NESVideoWidth, NESVideoHeight, m_screenScale,
+  m_emulatorScreen.create(NESVideoWidth, NESVideoHeight, ScreenScale,
                           sf::Color::White);
 
   m_cycleTimer = std::chrono::high_resolution_clock::now();
@@ -141,26 +142,6 @@ void Emulator::DMA(Byte page) {
   m_cpu.skipDMACycles();
   auto page_ptr = m_bus.getPagePtr(page);
   m_ppu.doDMA(page_ptr);
-}
-
-void Emulator::setVideoHeight(int height) {
-  m_screenScale = height / float(NESVideoHeight);
-  LOG(Info) << "Scale: " << m_screenScale
-            << " set. Screen: " << int(NESVideoWidth * m_screenScale) << "x"
-            << int(NESVideoHeight * m_screenScale) << std::endl;
-}
-
-void Emulator::setVideoWidth(int width) {
-  m_screenScale = width / float(NESVideoWidth);
-  LOG(Info) << "Scale: " << m_screenScale
-            << " set. Screen: " << int(NESVideoWidth * m_screenScale) << "x"
-            << int(NESVideoHeight * m_screenScale) << std::endl;
-}
-void Emulator::setVideoScale(float scale) {
-  m_screenScale = scale;
-  LOG(Info) << "Scale: " << m_screenScale
-            << " set. Screen: " << int(NESVideoWidth * m_screenScale) << "x"
-            << int(NESVideoHeight * m_screenScale) << std::endl;
 }
 
 void Emulator::setKeys(std::vector<sf::Keyboard::Key> &p1,
