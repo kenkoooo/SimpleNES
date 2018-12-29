@@ -21,11 +21,13 @@ void CPU::reset(Address start_addr) {
 }
 
 void CPU::interrupt(InterruptType type) {
-  if (f_I && type != NMI && type != BRK_)
+  if (f_I && type != NMI && type != BRK_) {
     return;
+  }
 
-  if (type == BRK_) // Add one if BRK, a quirk of 6502
+  if (type == BRK_) { // Add one if BRK, a quirk of 6502
     ++r_PC;
+  }
 
   pushStack(r_PC >> 8);
   pushStack(r_PC);
@@ -77,8 +79,9 @@ void CPU::skipDMACycles() {
 void CPU::step() {
   ++m_cycles;
 
-  if (m_skipCycles-- > 1)
+  if (m_skipCycles-- > 1) {
     return;
+  }
 
   m_skipCycles = 0;
 
@@ -116,7 +119,7 @@ bool CPU::executeImplied(Byte opcode) {
   case NOP:
     break;
   case BRK:
-    interrupt(BRK_);
+    this->interrupt(BRK_);
     break;
   case JSR:
     // Push address of next instruction - 1, thus r_PC + 1 instead of r_PC + 2
