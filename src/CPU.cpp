@@ -1,7 +1,10 @@
 #include "CPU.h"
 #include "CPUOpcodes.h"
 #include "Log.h"
+
+#include <cassert>
 #include <iomanip>
+#include <iostream>
 
 namespace sn {
 CPU::CPU(MainBus &mem) : m_bus(mem) {}

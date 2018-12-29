@@ -10,7 +10,7 @@ public:
   Byte readPRG(Address addr) const;
   const Byte *getPagePtr(Address addr);
 
-  Byte readCHR(Address addr);
+  Byte readCHR(Address addr) const;
   void writeCHR(Address addr, Byte value);
 
 private:

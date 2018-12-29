@@ -31,7 +31,7 @@ const Byte *MapperCNROM::getPagePtr(Address addr) {
     return &m_cartridge.getROM()[(addr - 0x8000) & 0x3fff];
 }
 
-Byte MapperCNROM::readCHR(Address addr) {
+Byte MapperCNROM::readCHR(Address addr) const {
   return m_cartridge.getVROM()[addr | (m_selectCHR << 13)];
 }
 

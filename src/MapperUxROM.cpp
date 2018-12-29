@@ -32,7 +32,7 @@ const Byte *MapperUxROM::getPagePtr(Address addr) {
     return m_lastBankPtr + (addr & 0x3fff);
 }
 
-Byte MapperUxROM::readCHR(Address addr) {
+Byte MapperUxROM::readCHR(Address addr) const {
   if (m_usesCharacterRAM)
     return m_characterRAM[addr];
   else

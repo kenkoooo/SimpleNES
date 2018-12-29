@@ -136,7 +136,7 @@ const Byte *MapperSxROM::getPagePtr(Address addr) {
     return (m_secondBankPRG + (addr & 0x3fff));
 }
 
-Byte MapperSxROM::readCHR(Address addr) {
+Byte MapperSxROM::readCHR(Address addr) const {
   if (m_usesCharacterRAM)
     return m_characterRAM[addr];
   else if (addr < 0x1000)

@@ -27,7 +27,7 @@ public:
   virtual Byte readPRG(Address addr) const = 0;
   virtual const Byte *getPagePtr(Address addr) = 0; // for DMAs
 
-  virtual Byte readCHR(Address addr) = 0;
+  virtual Byte readCHR(Address addr) const = 0;
   virtual void writeCHR(Address addr, Byte value) = 0;
 
   virtual NameTableMirroring getNameTableMirroring();

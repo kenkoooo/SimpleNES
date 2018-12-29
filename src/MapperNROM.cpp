@@ -38,7 +38,7 @@ const Byte *MapperNROM::getPagePtr(Address addr) {
     return &m_cartridge.getROM()[(addr - 0x8000) & 0x3fff];
 }
 
-Byte MapperNROM::readCHR(Address addr) {
+Byte MapperNROM::readCHR(Address addr) const {
   if (m_usesCharacterRAM)
     return m_characterRAM[addr];
   else
