@@ -7,7 +7,7 @@
 namespace sn {
 const float ScreenScale = 2.f;
 Emulator::Emulator()
-    : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen), m_cycleTimer(),
+    : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen),
       m_cpuCycleDuration(std::chrono::nanoseconds(559)) {
   if (!m_bus.setReadCallback(PPUSTATUS,
                              [&](void) { return m_ppu.getStatus(); }) ||
@@ -68,8 +68,10 @@ void Emulator::run(std::string rom_path) {
   m_emulatorScreen.create(NESVideoWidth, NESVideoHeight, ScreenScale,
                           sf::Color::White);
 
-  m_cycleTimer = std::chrono::high_resolution_clock::now();
-  m_elapsedTime = m_cycleTimer - m_cycleTimer;
+  TimePoint cycleTimer = std::chrono::high_resolution_clock::now();
+
+  std::chrono::high_resolution_clock::duration elapsedTime =
+      cycleTimer - cycleTimer;
 
   sf::Event event;
   bool focus = true, pause = false;
@@ -82,14 +84,14 @@ void Emulator::run(std::string rom_path) {
         return;
       } else if (event.type == sf::Event::GainedFocus) {
         focus = true;
-        m_cycleTimer = std::chrono::high_resolution_clock::now();
+        cycleTimer = std::chrono::high_resolution_clock::now();
       } else if (event.type == sf::Event::LostFocus)
         focus = false;
       else if (event.type == sf::Event::KeyPressed &&
                event.key.code == sf::Keyboard::F2) {
         pause = !pause;
         if (!pause)
-          m_cycleTimer = std::chrono::high_resolution_clock::now();
+          cycleTimer = std::chrono::high_resolution_clock::now();
       } else if (pause && event.type == sf::Event::KeyReleased &&
                  event.key.code == sf::Keyboard::F3) {
         for (int i = 0; i < 29781; ++i) // Around one frame
@@ -114,10 +116,10 @@ void Emulator::run(std::string rom_path) {
     }
 
     if (focus && !pause) {
-      m_elapsedTime += std::chrono::high_resolution_clock::now() - m_cycleTimer;
-      m_cycleTimer = std::chrono::high_resolution_clock::now();
+      elapsedTime += std::chrono::high_resolution_clock::now() - cycleTimer;
+      cycleTimer = std::chrono::high_resolution_clock::now();
 
-      while (m_elapsedTime > m_cpuCycleDuration) {
+      while (elapsedTime > m_cpuCycleDuration) {
         // PPU
         m_ppu.step();
         m_ppu.step();
@@ -125,7 +127,7 @@ void Emulator::run(std::string rom_path) {
         // CPU
         m_cpu.step();
 
-        m_elapsedTime -= m_cpuCycleDuration;
+        elapsedTime -= m_cpuCycleDuration;
       }
 
       m_window.draw(m_emulatorScreen);

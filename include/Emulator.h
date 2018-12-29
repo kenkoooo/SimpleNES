@@ -37,9 +37,6 @@ private:
   sf::RenderWindow m_window;
   VirtualScreen m_emulatorScreen;
 
-  TimePoint m_cycleTimer;
-
-  std::chrono::high_resolution_clock::duration m_elapsedTime;
   std::chrono::nanoseconds m_cpuCycleDuration;
 };
 } // namespace sn
