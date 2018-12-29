@@ -6,15 +6,15 @@
 namespace sn {
 Cartridge::Cartridge()
     : m_nameTableMirroring(0), m_mapperNumber(0), m_extendedRAM(false) {}
-const std::vector<Byte> &Cartridge::getROM() { return m_PRG_ROM; }
+const std::vector<Byte> &Cartridge::getROM() const { return m_PRG_ROM; }
 
-const std::vector<Byte> &Cartridge::getVROM() { return m_CHR_ROM; }
+const std::vector<Byte> &Cartridge::getVROM() const { return m_CHR_ROM; }
 
-Byte Cartridge::getMapper() { return m_mapperNumber; }
+Byte Cartridge::getMapper() const { return m_mapperNumber; }
 
-Byte Cartridge::getNameTableMirroring() { return m_nameTableMirroring; }
+Byte Cartridge::getNameTableMirroring() const { return m_nameTableMirroring; }
 
-bool Cartridge::hasExtendedRAM() { return m_extendedRAM; }
+bool Cartridge::hasExtendedRAM() const { return m_extendedRAM; }
 
 bool Cartridge::loadFromFile(std::string path) {
   std::ifstream romFile(path, std::ios_base::binary | std::ios_base::in);

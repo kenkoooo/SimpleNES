@@ -12,11 +12,11 @@ class Cartridge {
 public:
   Cartridge();
   bool loadFromFile(std::string path);
-  const std::vector<Byte> &getROM();
-  const std::vector<Byte> &getVROM();
-  Byte getMapper();
-  Byte getNameTableMirroring();
-  bool hasExtendedRAM();
+  const std::vector<Byte> &getROM() const;
+  const std::vector<Byte> &getVROM() const;
+  Byte getMapper() const;
+  Byte getNameTableMirroring() const;
+  bool hasExtendedRAM() const;
 
 private:
   std::vector<Byte> m_PRG_ROM;
