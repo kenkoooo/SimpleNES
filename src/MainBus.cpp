@@ -47,11 +47,10 @@ Byte MainBus::read(Address addr) const {
 }
 
 void MainBus::write(Address addr, Byte value) {
-  if (addr < 0x2000)
+  if (addr < 0x2000) {
     m_RAM[addr & 0x7ff] = value;
-  else if (addr < 0x4020) {
-    if (addr < 0x4000) // PPU registers, mirrored
-    {
+  } else if (addr < 0x4020) {
+    if (addr < 0x4000) { // PPU registers, mirrored
       auto it = m_writeCallbacks.find(static_cast<IORegisters>(addr & 0x2007));
       if (it != m_writeCallbacks.end())
         (it->second)(value);
@@ -60,19 +59,20 @@ void MainBus::write(Address addr, Byte value) {
       else
         LOG(InfoVerbose) << "No write callback registered for I/O register at: "
                          << std::hex << +addr << std::endl;
-    } else if (addr < 0x4017 && addr >= 0x4014) // only some registers
-    {
+    } else if (addr < 0x4017 && addr >= 0x4014) { // only some registers
       auto it = m_writeCallbacks.find(static_cast<IORegisters>(addr));
-      if (it != m_writeCallbacks.end())
+      if (it != m_writeCallbacks.end()) {
         (it->second)(value);
-      // Second object is the pointer to the function object
-      // Dereference the function pointer and call it
-      else
+      } // Second object is the pointer to the function object
+        // Dereference the function pointer and call it
+      else {
         LOG(InfoVerbose) << "No write callback registered for I/O register at: "
                          << std::hex << +addr << std::endl;
-    } else
+      }
+    } else {
       LOG(InfoVerbose) << "Write access attmept at: " << std::hex << +addr
                        << std::endl;
+    }
   } else if (addr < 0x6000) {
     LOG(InfoVerbose)
         << "Expansion ROM access attempted. This is currently unsupported"

@@ -14,7 +14,7 @@ MapperUxROM::MapperUxROM(Cartridge &cart)
   m_lastBankPtr = &cart.getROM()[cart.getROM().size() - 0x4000]; // last - 16KB
 }
 
-Byte MapperUxROM::readPRG(Address addr) {
+Byte MapperUxROM::readPRG(Address addr) const {
   if (addr < 0xc000)
     return m_cartridge
         .getROM()[((addr - 0x8000) & 0x3fff) | (m_selectPRG << 14)];

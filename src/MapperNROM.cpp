@@ -19,7 +19,7 @@ MapperNROM::MapperNROM(Cartridge &cart) : Mapper(cart, Mapper::NROM) {
     m_usesCharacterRAM = false;
 }
 
-Byte MapperNROM::readPRG(Address addr) {
+Byte MapperNROM::readPRG(Address addr) const {
   if (!m_oneBank)
     return m_cartridge.getROM()[addr - 0x8000];
   else // mirrored

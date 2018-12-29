@@ -7,7 +7,7 @@ class MapperSxROM : public Mapper {
 public:
   MapperSxROM(Cartridge &cart, std::function<void(void)> mirroring_cb);
   void writePRG(Address addr, Byte value);
-  Byte readPRG(Address addr);
+  Byte readPRG(Address addr) const;
   const Byte *getPagePtr(Address addr);
 
   Byte readCHR(Address addr);

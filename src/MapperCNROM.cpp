@@ -13,7 +13,7 @@ MapperCNROM::MapperCNROM(Cartridge &cart)
   }
 }
 
-Byte MapperCNROM::readPRG(Address addr) {
+Byte MapperCNROM::readPRG(Address addr) const {
   if (!m_oneBank)
     return m_cartridge.getROM()[addr - 0x8000];
   else // mirrored

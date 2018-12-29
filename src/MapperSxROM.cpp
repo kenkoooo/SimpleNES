@@ -25,7 +25,7 @@ MapperSxROM::MapperSxROM(Cartridge &cart,
                                    0x4000 /*0x2000 * 0x0e*/]; // last bank
 }
 
-Byte MapperSxROM::readPRG(Address addr) {
+Byte MapperSxROM::readPRG(Address addr) const {
   if (addr < 0xc000)
     return *(m_firstBankPRG + (addr & 0x3fff));
   else

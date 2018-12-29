@@ -7,7 +7,7 @@ class MapperNROM : public Mapper {
 public:
   MapperNROM(Cartridge &cart);
   void writePRG(Address addr, Byte value);
-  Byte readPRG(Address addr);
+  Byte readPRG(Address addr) const;
   const Byte *getPagePtr(Address addr);
 
   Byte readCHR(Address addr);
