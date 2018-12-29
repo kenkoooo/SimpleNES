@@ -5,7 +5,7 @@
 namespace sn {
 MainBus::MainBus() : m_RAM(0x800, 0), m_mapper(nullptr) {}
 
-Byte MainBus::read(Address addr) {
+Byte MainBus::read(Address addr) const {
   if (addr < 0x2000)
     return m_RAM[addr & 0x7ff];
   else if (addr < 0x4020) {

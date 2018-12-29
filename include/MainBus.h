@@ -25,7 +25,7 @@ enum IORegisters {
 class MainBus {
 public:
   MainBus();
-  Byte read(Address addr);
+  Byte read(Address addr) const;
   void write(Address addr, Byte value);
   bool setMapper(Mapper *mapper);
   bool setWriteCallback(IORegisters reg, std::function<void(Byte)> callback);
