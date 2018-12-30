@@ -77,7 +77,6 @@ void Emulator::run(std::string rom_path) {
     return;
 
   m_cpu.reset();
-  m_ppu.reset();
 
   m_window.create(
       sf::VideoMode(NESVideoWidth * ScreenScale, NESVideoHeight * ScreenScale),

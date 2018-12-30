@@ -19,8 +19,6 @@ PPU::PPU(PictureBus &bus, VirtualScreen &screen)
   m_scanlineSprites.resize(0);
 }
 
-void PPU::reset() {}
-
 void PPU::setInterruptCallback(std::function<void(void)> cb) {
   m_vblankCallback = cb;
 }

@@ -14,7 +14,7 @@ target_link_libraries(Emulator CPU Controller MainBus PPU PictureBus Log)
 add_library(Log Log.cpp)
 
 add_library(MainBus MainBus.cpp)
-target_link_libraries(MainBus Cartridge Mapper Log)
+target_link_libraries(MainBus Mapper Log)
 
 add_library(Mapper Mapper.cpp)
 target_link_libraries(Mapper Cartridge MapperCNROM MapperNROM MapperSxROM MapperUxROM Log)

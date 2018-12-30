@@ -19,7 +19,6 @@ class PPU {
 public:
   PPU(PictureBus &bus, VirtualScreen &screen);
   void step();
-  void reset();
 
   void setInterruptCallback(std::function<void(void)> cb);
 

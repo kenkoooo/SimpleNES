@@ -1,6 +1,5 @@
 #ifndef MEMORY_H
 #define MEMORY_H
-#include "Cartridge.h"
 #include "Mapper.h"
 #include <functional>
 #include <map>
