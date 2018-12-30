@@ -1,3 +1,4 @@
+#include "Cartridge.h"
 #include "Controller.h"
 #include "Emulator.h"
 #include "Log.h"
@@ -26,9 +27,10 @@ int main(int argc, char **argv) {
          sf::Keyboard::Left,    sf::Keyboard::Right};
   sn::Controller controller1(p1);
   sn::Controller controller2(p2);
-  sn::Emulator emulator(controller1, controller2);
+  sn::Cartridge cartridge;
+  cartridge.loadFromFile(argv[1]);
 
-  std::string path = argv[1];
-  emulator.run(path);
+  sn::Emulator emulator(controller1, controller2, cartridge);
+  emulator.run();
   return 0;
 }

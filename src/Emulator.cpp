@@ -7,9 +7,11 @@
 namespace sn {
 const float ScreenScale = 2.f;
 const std::chrono::nanoseconds CpuCycleDuration = std::chrono::nanoseconds(559);
-Emulator::Emulator(Controller controller1, Controller controller2)
+Emulator::Emulator(Controller controller1, Controller controller2,
+                   Cartridge cartridge)
     : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen),
-      m_controller1(controller1), m_controller2(controller2) {
+      m_controller1(controller1), m_controller2(controller2),
+      m_cartridge(cartridge) {
   if (!m_bus.setReadCallback(PPUSTATUS,
                              [&](void) { return m_ppu.getStatus(); }) ||
       !m_bus.setReadCallback(PPUDATA, [&](void) { return m_ppu.getData(); }) ||
@@ -60,9 +62,7 @@ Emulator::Emulator(Controller controller1, Controller controller2)
   m_ppu.setInterruptCallback([&]() { m_cpu.interrupt(CPU::NMI); });
 }
 
-void Emulator::run(std::string rom_path) {
-  if (!m_cartridge.loadFromFile(rom_path))
-    return;
+void Emulator::run() {
 
   m_mapper = Mapper::createMapper(
       static_cast<Mapper::Type>(m_cartridge.getMapper()), m_cartridge,
