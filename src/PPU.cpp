@@ -6,9 +6,7 @@ PPU::PPU(PictureBus &bus, VirtualScreen &screen)
     : m_bus(bus), m_screen(screen), m_spriteMemory(64 * 4),
       m_pictureBuffer(
           ScanlineVisibleDots,
-          std::vector<sf::Color>(VisibleScanlines, sf::Color::Magenta)) {}
-
-void PPU::reset() {
+          std::vector<sf::Color>(VisibleScanlines, sf::Color::Magenta)) {
   m_longSprites = m_generateInterrupt = m_greyscaleMode = m_vblank = false;
   m_showBackground = m_showSprites = m_evenFrame = m_firstWrite = true;
   m_bgPage = m_sprPage = Low;
@@ -20,6 +18,8 @@ void PPU::reset() {
   m_scanlineSprites.reserve(8);
   m_scanlineSprites.resize(0);
 }
+
+void PPU::reset() {}
 
 void PPU::setInterruptCallback(std::function<void(void)> cb) {
   m_vblankCallback = cb;
