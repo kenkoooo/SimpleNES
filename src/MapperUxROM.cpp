@@ -24,7 +24,7 @@ Byte MapperUxROM::readPRG(Address addr) const {
 
 void MapperUxROM::writePRG(Address addr, Byte value) { m_selectPRG = value; }
 
-const Byte *MapperUxROM::getPagePtr(Address addr) {
+const Byte *MapperUxROM::getPagePtr(Address addr) const {
   if (addr < 0xc000)
     return &m_cartridge
                 .getROM()[((addr - 0x8000) & 0x3fff) | (m_selectPRG << 14)];

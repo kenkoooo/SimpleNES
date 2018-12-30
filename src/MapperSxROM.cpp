@@ -129,7 +129,7 @@ void MapperSxROM::calculatePRGPointers() {
   }
 }
 
-const Byte *MapperSxROM::getPagePtr(Address addr) {
+const Byte *MapperSxROM::getPagePtr(Address addr) const {
   if (addr < 0xc000)
     return (m_firstBankPRG + (addr & 0x3fff));
   else

@@ -8,7 +8,7 @@ public:
   MapperCNROM(Cartridge &cart);
   void writePRG(Address addr, Byte value);
   Byte readPRG(Address addr) const;
-  const Byte *getPagePtr(Address addr);
+  const Byte *getPagePtr(Address addr) const override;
 
   Byte readCHR(Address addr) const;
   void writeCHR(Address addr, Byte value);
