@@ -6,14 +6,14 @@ namespace sn {
 class MapperSxROM : public Mapper {
 public:
   MapperSxROM(Cartridge &cart, std::function<void(void)> mirroring_cb);
-  void writePRG(Address addr, Byte value);
-  Byte readPRG(Address addr) const;
+  void writePRG(Address addr, Byte value) override;
+  Byte readPRG(Address addr) const override;
   const Byte *getPagePtr(Address addr) const override;
 
-  Byte readCHR(Address addr) const;
-  void writeCHR(Address addr, Byte value);
+  Byte readCHR(Address addr) const override;
+  void writeCHR(Address addr, Byte value) override;
 
-  NameTableMirroring getNameTableMirroring();
+  NameTableMirroring getNameTableMirroring() override;
 
 private:
   void calculatePRGPointers();
