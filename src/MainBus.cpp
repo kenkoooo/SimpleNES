@@ -7,30 +7,35 @@ MainBus::MainBus() : m_RAM(0x800, 0), m_mapper(nullptr) {}
 
 void MainBus::set_ppu(PPU *ppu) { this->ppu = ppu; }
 
+Byte MainBus::read_callback(IORegisters reg) const {
+  switch (reg) {
+  case PPUSTATUS:
+    return this->ppu->getStatus();
+  case PPUDATA:
+    return this->ppu->getData();
+  case JOY1:
+    return this->controller1->read();
+  case JOY2:
+    return this->controller2->read();
+  case OAMDATA:
+    return this->ppu->getOAMData();
+  default:
+    LOG(InfoVerbose) << "No read callback registered for I/O register at: "
+                     << std::hex << +reg << std::endl;
+    return 0;
+  }
+}
+
 Byte MainBus::read(Address addr) const {
-  if (addr < 0x2000)
+  if (addr < 0x2000) {
     return m_RAM[addr & 0x7ff];
-  else if (addr < 0x4020) {
-    if (addr < 0x4000) // PPU registers, mirrored
-    {
-      auto it = m_readCallbacks.find(static_cast<IORegisters>(addr & 0x2007));
-      if (it != m_readCallbacks.end())
-        return (it->second)();
-      // Second object is the pointer to the function object
-      // Dereference the function pointer and call it
-      else
-        LOG(InfoVerbose) << "No read callback registered for I/O register at: "
-                         << std::hex << +addr << std::endl;
-    } else if (addr < 0x4018 && addr >= 0x4014) // Only *some* IO registers
-    {
-      auto it = m_readCallbacks.find(static_cast<IORegisters>(addr));
-      if (it != m_readCallbacks.end())
-        return (it->second)();
-      // Second object is the pointer to the function object
-      // Dereference the function pointer and call it
-      else
-        LOG(InfoVerbose) << "No read callback registered for I/O register at: "
-                         << std::hex << +addr << std::endl;
+  } else if (addr < 0x4020) {
+    if (addr < 0x4000) { // PPU registers, mirrored
+      IORegisters reg = static_cast<IORegisters>(addr & 0x2007);
+      return this->read_callback(reg);
+    } else if (addr < 0x4018 && addr >= 0x4014) { // Only *some* IO registers
+      IORegisters reg = static_cast<IORegisters>(addr);
+      return this->read_callback(reg);
     } else
       LOG(InfoVerbose) << "Read access attempt at: " << std::hex << +addr
                        << std::endl;
@@ -111,13 +116,9 @@ void MainBus::set_write_callback(std::function<void(IORegisters, Byte)> f) {
   this->write_callback = f;
 }
 
-bool MainBus::setReadCallback(IORegisters reg,
-                              std::function<Byte(void)> callback) {
-  if (!callback) {
-    LOG(Error) << "callback argument is nullptr" << std::endl;
-    return false;
-  }
-  return m_readCallbacks.emplace(reg, callback).second;
+void MainBus::set_controller(Controller *controller1, Controller *controller2) {
+  this->controller1 = controller1;
+  this->controller2 = controller2;
 }
 
 }; // namespace sn

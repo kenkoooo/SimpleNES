@@ -1,5 +1,6 @@
 #ifndef MEMORY_H
 #define MEMORY_H
+#include "Controller.h"
 #include "Mapper.h"
 #include "PPU.h"
 #include <functional>
@@ -29,19 +30,21 @@ public:
   void write(Address addr, Byte value);
   bool setMapper(Mapper *mapper);
   void set_write_callback(std::function<void(IORegisters, Byte)>);
-  bool setReadCallback(IORegisters reg, std::function<Byte(void)> callback);
   const Byte *getPagePtr(Byte page);
 
   void set_ppu(PPU *ppu);
+  void set_controller(Controller *controller1, Controller *controller2);
   PPU *ppu;
 
 private:
+  Byte read_callback(IORegisters reg) const;
   std::vector<Byte> m_RAM;
   std::vector<Byte> m_extRAM;
   Mapper *m_mapper;
+  Controller *controller1;
+  Controller *controller2;
 
   std::function<void(IORegisters, Byte)> write_callback;
-  std::map<IORegisters, std::function<Byte(void)>> m_readCallbacks;
   ;
 };
 }; // namespace sn

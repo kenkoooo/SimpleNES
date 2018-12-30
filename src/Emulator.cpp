@@ -12,17 +12,6 @@ Emulator::Emulator(Controller controller1, Controller controller2,
     : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen),
       m_controller1(controller1), m_controller2(controller2),
       m_cartridge(cartridge) {
-  if (!m_bus.setReadCallback(PPUSTATUS,
-                             [&](void) { return m_ppu.getStatus(); }) ||
-      !m_bus.setReadCallback(PPUDATA, [&](void) { return m_ppu.getData(); }) ||
-      !m_bus.setReadCallback(JOY1,
-                             [&](void) { return m_controller1.read(); }) ||
-      !m_bus.setReadCallback(JOY2,
-                             [&](void) { return m_controller2.read(); }) ||
-      !m_bus.setReadCallback(OAMDATA,
-                             [&](void) { return m_ppu.getOAMData(); })) {
-    LOG(Error) << "Critical error: Failed to set I/O callbacks" << std::endl;
-  }
   m_bus.set_write_callback([&](IORegisters reg, Byte b) {
     switch (reg) {
     case PPUCTRL:
@@ -66,6 +55,7 @@ Emulator::Emulator(Controller controller1, Controller controller2,
 
 void Emulator::run() {
   this->m_bus.set_ppu(&this->m_ppu);
+  this->m_bus.set_controller(&this->m_controller1, &this->m_controller2);
 
   m_mapper = Mapper::createMapper(
       static_cast<Mapper::Type>(m_cartridge.getMapper()), m_cartridge,
