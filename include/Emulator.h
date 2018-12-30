@@ -22,8 +22,6 @@ public:
   void run();
 
 private:
-  void DMA(Byte page);
-
   MainBus m_bus;
   PictureBus m_pictureBus;
   CPU m_cpu;

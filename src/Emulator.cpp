@@ -43,9 +43,11 @@ Emulator::Emulator(Controller controller1, Controller controller2,
     case PPUDATA:
       m_bus.ppu->setData(b);
       break;
-    case OAMDMA:
-      this->DMA(b);
-      break;
+    case OAMDMA: {
+      m_cpu.skipDMACycles();
+      const auto *page_ptr = m_bus.getPagePtr(b);
+      m_bus.ppu->doDMA(page_ptr);
+    } break;
     case JOY1:
       m_controller1.strobe(b);
       m_controller2.strobe(b);
@@ -156,12 +158,6 @@ void Emulator::run() {
       // second
     }
   }
-}
-
-void Emulator::DMA(Byte page) {
-  m_cpu.skipDMACycles();
-  auto page_ptr = m_bus.getPagePtr(page);
-  m_ppu.doDMA(page_ptr);
 }
 
 } // namespace sn
