@@ -1,6 +1,7 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 #include "Mapper.h"
+#include "PPU.h"
 #include <functional>
 #include <map>
 #include <memory>
@@ -30,6 +31,9 @@ public:
   void set_write_callback(std::function<void(IORegisters, Byte)>);
   bool setReadCallback(IORegisters reg, std::function<Byte(void)> callback);
   const Byte *getPagePtr(Byte page);
+
+  void set_ppu(PPU *ppu);
+  PPU *ppu;
 
 private:
   std::vector<Byte> m_RAM;

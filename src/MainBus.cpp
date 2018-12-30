@@ -5,6 +5,8 @@
 namespace sn {
 MainBus::MainBus() : m_RAM(0x800, 0), m_mapper(nullptr) {}
 
+void MainBus::set_ppu(PPU *ppu) { this->ppu = ppu; }
+
 Byte MainBus::read(Address addr) const {
   if (addr < 0x2000)
     return m_RAM[addr & 0x7ff];

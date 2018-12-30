@@ -8,7 +8,7 @@ add_library(Log SHARED Log.cpp)
 add_library(VirtualScreen SHARED VirtualScreen.cpp) 
 
 add_library(MainBus SHARED MainBus.cpp)
-target_link_libraries(MainBus Mapper Log)
+target_link_libraries(MainBus PPU Mapper Log)
 
 add_library(Mapper SHARED Mapper.cpp MapperCNROM.cpp MapperNROM.cpp MapperSxROM.cpp MapperUxROM.cpp)
 target_link_libraries(Mapper Cartridge Log)

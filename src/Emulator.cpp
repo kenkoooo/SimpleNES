@@ -26,32 +26,32 @@ Emulator::Emulator(Controller controller1, Controller controller2,
   m_bus.set_write_callback([&](IORegisters reg, Byte b) {
     switch (reg) {
     case PPUCTRL:
-      m_ppu.control(b);
+      m_bus.ppu->control(b);
       break;
     case PPUMASK:
-      m_ppu.setMask(b);
+      m_bus.ppu->setMask(b);
       break;
     case OAMADDR:
-      m_ppu.setOAMAddress(b);
+      m_bus.ppu->setOAMAddress(b);
       break;
     case PPUADDR:
-      m_ppu.setDataAddress(b);
+      m_bus.ppu->setDataAddress(b);
       break;
     case PPUSCROL:
-      m_ppu.setScroll(b);
+      m_bus.ppu->setScroll(b);
       break;
     case PPUDATA:
-      m_ppu.setData(b);
+      m_bus.ppu->setData(b);
       break;
     case OAMDMA:
-      DMA(b);
+      this->DMA(b);
       break;
     case JOY1:
       m_controller1.strobe(b);
       m_controller2.strobe(b);
       break;
     case OAMDATA:
-      m_ppu.setOAMData(b);
+      m_bus.ppu->setOAMData(b);
       break;
     default:
       LOG(InfoVerbose) << "No write callback registered for I/O register at: "
@@ -63,6 +63,7 @@ Emulator::Emulator(Controller controller1, Controller controller2,
 }
 
 void Emulator::run() {
+  this->m_bus.set_ppu(&this->m_ppu);
 
   m_mapper = Mapper::createMapper(
       static_cast<Mapper::Type>(m_cartridge.getMapper()), m_cartridge,
