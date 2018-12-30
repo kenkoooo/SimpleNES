@@ -1,10 +1,10 @@
 #ifndef PPU_H
 #define PPU_H
+#include <array>
+#include <functional>
 #include "PaletteColors.h"
 #include "PictureBus.h"
 #include "VirtualScreen.h"
-#include <array>
-#include <functional>
 
 namespace sn {
 const int ScanlineCycleLength = 341;
@@ -16,8 +16,8 @@ const int FrameEndScanline = 261;
 const int AttributeOffset = 0x3C0;
 
 class PPU {
-public:
-  PPU(PictureBus &bus, VirtualScreen &screen);
+ public:
+  PPU(PictureBus &bus);
   void step();
 
   void setInterruptCallback(std::function<void(void)> cb);
@@ -37,8 +37,9 @@ public:
   Byte getData();
   Byte getOAMData();
   void setOAMData(Byte value);
+  VirtualScreen m_screen;
 
-private:
+ private:
   Byte readOAM(Byte addr);
   void writeOAM(Byte addr, Byte value);
   Byte read(Address addr);
@@ -46,7 +47,6 @@ private:
   void render();
 
   PictureBus &m_bus;
-  VirtualScreen &m_screen;
 
   std::function<void(void)> m_vblankCallback;
 
@@ -91,6 +91,6 @@ private:
 
   std::vector<std::vector<sf::Color>> m_pictureBuffer;
 };
-} // namespace sn
+}  // namespace sn
 
-#endif // PPU_H
+#endif  // PPU_H

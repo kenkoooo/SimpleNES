@@ -16,12 +16,12 @@ const int NESVideoWidth = ScanlineVisibleDots;
 const int NESVideoHeight = VisibleScanlines;
 
 class Emulator {
-public:
+ public:
   Emulator() = delete;
   Emulator(Controller controller1, Controller controller2, Cartridge cartridge);
   void run();
 
-private:
+ private:
   MainBus m_bus;
   PictureBus m_pictureBus;
   CPU m_cpu;
@@ -32,7 +32,6 @@ private:
   Controller m_controller1, m_controller2;
 
   sf::RenderWindow m_window;
-  VirtualScreen m_emulatorScreen;
 };
-} // namespace sn
-#endif // EMULATOR_H
+}  // namespace sn
+#endif  // EMULATOR_H

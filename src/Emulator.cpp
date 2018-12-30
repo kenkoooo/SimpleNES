@@ -9,8 +9,10 @@ const float ScreenScale = 2.f;
 const std::chrono::nanoseconds CpuCycleDuration = std::chrono::nanoseconds(559);
 Emulator::Emulator(Controller controller1, Controller controller2,
                    Cartridge cartridge)
-    : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen),
-      m_controller1(controller1), m_controller2(controller2),
+    : m_cpu(m_bus),
+      m_ppu(m_pictureBus),
+      m_controller1(controller1),
+      m_controller2(controller2),
       m_cartridge(cartridge) {
   m_bus.set_cpu_callback([&]() { m_cpu.skipDMACycles(); });
   m_ppu.setInterruptCallback([&]() { m_cpu.interrupt(CPU::NMI); });
@@ -38,8 +40,8 @@ void Emulator::run() {
       sf::VideoMode(NESVideoWidth * ScreenScale, NESVideoHeight * ScreenScale),
       "SimpleNES", sf::Style::Titlebar | sf::Style::Close);
   m_window.setVerticalSyncEnabled(true);
-  m_emulatorScreen.create(NESVideoWidth, NESVideoHeight, ScreenScale,
-                          sf::Color::White);
+  m_ppu.m_screen.create(NESVideoWidth, NESVideoHeight, ScreenScale,
+                        sf::Color::White);
 
   TimePoint cycleTimer = std::chrono::high_resolution_clock::now();
 
@@ -63,11 +65,10 @@ void Emulator::run() {
       else if (event.type == sf::Event::KeyPressed &&
                event.key.code == sf::Keyboard::F2) {
         pause = !pause;
-        if (!pause)
-          cycleTimer = std::chrono::high_resolution_clock::now();
+        if (!pause) cycleTimer = std::chrono::high_resolution_clock::now();
       } else if (pause && event.type == sf::Event::KeyReleased &&
                  event.key.code == sf::Keyboard::F3) {
-        for (int i = 0; i < 29781; ++i) // Around one frame
+        for (int i = 0; i < 29781; ++i)  // Around one frame
         {
           // PPU
           m_ppu.step();
@@ -103,7 +104,7 @@ void Emulator::run() {
         elapsedTime -= CpuCycleDuration;
       }
 
-      m_window.draw(m_emulatorScreen);
+      m_window.draw(m_ppu.m_screen);
       m_window.display();
     } else {
       sf::sleep(sf::milliseconds(1000 / 60));
@@ -113,4 +114,4 @@ void Emulator::run() {
   }
 }
 
-} // namespace sn
+}  // namespace sn
