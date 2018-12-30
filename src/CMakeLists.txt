@@ -1,40 +1,26 @@
 include_directories(../include/)
 
-add_library(Cartridge Cartridge.cpp)
+add_library(Cartridge SHARED Cartridge.cpp)
 target_link_libraries(Cartridge Log)
 
-add_library(Controller Controller.cpp)
+add_library(Controller SHARED Controller.cpp)
+add_library(Log SHARED Log.cpp)
+add_library(VirtualScreen SHARED VirtualScreen.cpp) 
 
-add_library(CPU CPU.cpp)
-target_link_libraries(CPU MainBus Log)
-
-add_library(Emulator Emulator.cpp)
-target_link_libraries(Emulator CPU Controller MainBus PPU PictureBus Log)
-
-add_library(Log Log.cpp)
-
-add_library(MainBus MainBus.cpp)
+add_library(MainBus SHARED MainBus.cpp)
 target_link_libraries(MainBus Mapper Log)
 
-add_library(Mapper Mapper.cpp)
-target_link_libraries(Mapper Cartridge MapperCNROM MapperNROM MapperSxROM MapperUxROM Log)
+add_library(Mapper SHARED Mapper.cpp MapperCNROM.cpp MapperNROM.cpp MapperSxROM.cpp MapperUxROM.cpp)
+target_link_libraries(Mapper Cartridge Log)
 
-add_library(MapperCNROM MapperCNROM.cpp)
-target_link_libraries(MapperCNROM Mapper Log)
-
-add_library(MapperNROM MapperNROM.cpp)
-target_link_libraries(MapperNROM Mapper Log)
-
-add_library(MapperSxROM MapperSxROM.cpp)
-target_link_libraries(MapperSxROM Mapper Log)
-
-add_library(MapperUxROM MapperUxROM.cpp)
-target_link_libraries(MapperUxROM Mapper Log)
-
-add_library(PictureBus PictureBus.cpp)
+add_library(PictureBus SHARED PictureBus.cpp)
 target_link_libraries(PictureBus Mapper Cartridge)
 
-add_library(PPU PPU.cpp)
-target_link_libraries(PPU VirtualScreen PictureBus Log)
+add_library(CPU SHARED CPU.cpp)
+target_link_libraries(CPU MainBus Log)
 
-add_library(VirtualScreen VirtualScreen.cpp) 
+add_library(Emulator SHARED Emulator.cpp)
+target_link_libraries(Emulator CPU Controller MainBus PPU PictureBus Log)
+
+add_library(PPU SHARED PPU.cpp)
+target_link_libraries(PPU VirtualScreen PictureBus Log)
