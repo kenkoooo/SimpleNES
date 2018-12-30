@@ -9,7 +9,7 @@ using Byte = std::uint8_t;
 using Address = std::uint16_t;
 
 class Cartridge {
-public:
+ public:
   Cartridge();
   bool loadFromFile(std::string path);
   const std::vector<Byte> &getROM() const;
@@ -18,7 +18,7 @@ public:
   Byte getNameTableMirroring() const;
   bool hasExtendedRAM() const;
 
-private:
+ private:
   std::vector<Byte> m_PRG_ROM;
   std::vector<Byte> m_CHR_ROM;
   Byte m_nameTableMirroring;
@@ -27,6 +27,6 @@ private:
   // bool m_chrRAM;
 };
 
-}; // namespace sn
+};  // namespace sn
 
-#endif // CARTRIDGE_H
+#endif  // CARTRIDGE_H

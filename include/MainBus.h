@@ -1,12 +1,12 @@
 #ifndef MEMORY_H
 #define MEMORY_H
-#include "Controller.h"
-#include "Mapper.h"
-#include "PPU.h"
 #include <functional>
 #include <map>
 #include <memory>
 #include <vector>
+#include "Controller.h"
+#include "Mapper.h"
+#include "PPU.h"
 
 namespace sn {
 enum IORegisters {
@@ -24,7 +24,7 @@ enum IORegisters {
 };
 
 class MainBus {
-public:
+ public:
   MainBus();
   Byte read(Address addr) const;
   void write(Address addr, Byte value);
@@ -36,7 +36,7 @@ public:
   void set_cpu_callback(std::function<void(void)>);
   PPU *ppu;
 
-private:
+ private:
   Byte read_callback(IORegisters reg) const;
   void write_callback(IORegisters reg, Byte b);
 
@@ -48,6 +48,6 @@ private:
   Controller *controller1;
   Controller *controller2;
 };
-}; // namespace sn
+};  // namespace sn
 
-#endif // MEMORY_H
+#endif  // MEMORY_H

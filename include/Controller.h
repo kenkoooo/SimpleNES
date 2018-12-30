@@ -7,7 +7,7 @@
 namespace sn {
 using Byte = std::uint8_t;
 class Controller {
-public:
+ public:
   Controller() = delete;
   Controller(const std::vector<sf::Keyboard::Key> &keys);
   enum Buttons {
@@ -25,13 +25,13 @@ public:
   void strobe(Byte b);
   Byte read();
 
-private:
+ private:
   bool m_strobe;
   unsigned int m_keyStates;
 
   std::vector<sf::Keyboard::Key> m_keyBindings;
   //         sf::Keyboard::Key m_keyBindings[TotalButtons];
 };
-} // namespace sn
+}  // namespace sn
 
-#endif // CONTROLLER_H
+#endif  // CONTROLLER_H
