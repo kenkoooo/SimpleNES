@@ -29,23 +29,24 @@ public:
   Byte read(Address addr) const;
   void write(Address addr, Byte value);
   bool setMapper(Mapper *mapper);
-  void set_write_callback(std::function<void(IORegisters, Byte)>);
   const Byte *getPagePtr(Byte page);
 
   void set_ppu(PPU *ppu);
   void set_controller(Controller *controller1, Controller *controller2);
+  void set_cpu_callback(std::function<void(void)>);
   PPU *ppu;
 
 private:
   Byte read_callback(IORegisters reg) const;
+  void write_callback(IORegisters reg, Byte b);
+
+  std::function<void(void)> cpu_callback;
+
   std::vector<Byte> m_RAM;
   std::vector<Byte> m_extRAM;
   Mapper *m_mapper;
   Controller *controller1;
   Controller *controller2;
-
-  std::function<void(IORegisters, Byte)> write_callback;
-  ;
 };
 }; // namespace sn
 

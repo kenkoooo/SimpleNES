@@ -12,44 +12,7 @@ Emulator::Emulator(Controller controller1, Controller controller2,
     : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen),
       m_controller1(controller1), m_controller2(controller2),
       m_cartridge(cartridge) {
-  m_bus.set_write_callback([&](IORegisters reg, Byte b) {
-    switch (reg) {
-    case PPUCTRL:
-      m_bus.ppu->control(b);
-      break;
-    case PPUMASK:
-      m_bus.ppu->setMask(b);
-      break;
-    case OAMADDR:
-      m_bus.ppu->setOAMAddress(b);
-      break;
-    case PPUADDR:
-      m_bus.ppu->setDataAddress(b);
-      break;
-    case PPUSCROL:
-      m_bus.ppu->setScroll(b);
-      break;
-    case PPUDATA:
-      m_bus.ppu->setData(b);
-      break;
-    case OAMDMA: {
-      m_cpu.skipDMACycles();
-      const auto *page_ptr = m_bus.getPagePtr(b);
-      m_bus.ppu->doDMA(page_ptr);
-    } break;
-    case JOY1:
-      m_controller1.strobe(b);
-      m_controller2.strobe(b);
-      break;
-    case OAMDATA:
-      m_bus.ppu->setOAMData(b);
-      break;
-    default:
-      LOG(InfoVerbose) << "No write callback registered for I/O register at: "
-                       << std::hex << +reg << std::endl;
-      break;
-    }
-  });
+  m_bus.set_cpu_callback([&]() { m_cpu.skipDMACycles(); });
   m_ppu.setInterruptCallback([&]() { m_cpu.interrupt(CPU::NMI); });
 }
 

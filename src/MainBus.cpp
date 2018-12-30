@@ -4,7 +4,9 @@
 
 namespace sn {
 MainBus::MainBus() : m_RAM(0x800, 0), m_mapper(nullptr) {}
-
+void MainBus::set_cpu_callback(std::function<void()> f) {
+  this->cpu_callback = f;
+}
 void MainBus::set_ppu(PPU *ppu) { this->ppu = ppu; }
 
 Byte MainBus::read_callback(IORegisters reg) const {
@@ -51,6 +53,45 @@ Byte MainBus::read(Address addr) const {
     return m_mapper->readPRG(addr);
   }
   return 0;
+}
+
+void MainBus::write_callback(IORegisters reg, Byte b) {
+  switch (reg) {
+  case PPUCTRL:
+    this->ppu->control(b);
+    break;
+  case PPUMASK:
+    this->ppu->setMask(b);
+    break;
+  case OAMADDR:
+    this->ppu->setOAMAddress(b);
+    break;
+  case PPUADDR:
+    this->ppu->setDataAddress(b);
+    break;
+  case PPUSCROL:
+    this->ppu->setScroll(b);
+    break;
+  case PPUDATA:
+    this->ppu->setData(b);
+    break;
+  case OAMDMA: {
+    this->cpu_callback();
+    const auto *page_ptr = this->getPagePtr(b);
+    this->ppu->doDMA(page_ptr);
+  } break;
+  case JOY1:
+    this->controller1->strobe(b);
+    this->controller2->strobe(b);
+    break;
+  case OAMDATA:
+    this->ppu->setOAMData(b);
+    break;
+  default:
+    LOG(InfoVerbose) << "No write callback registered for I/O register at: "
+                     << std::hex << +reg << std::endl;
+    break;
+  }
 }
 
 void MainBus::write(Address addr, Byte value) {
@@ -110,10 +151,6 @@ bool MainBus::setMapper(Mapper *mapper) {
     m_extRAM.resize(0x2000);
 
   return true;
-}
-
-void MainBus::set_write_callback(std::function<void(IORegisters, Byte)> f) {
-  this->write_callback = f;
 }
 
 void MainBus::set_controller(Controller *controller1, Controller *controller2) {
