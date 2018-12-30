@@ -19,25 +19,42 @@ Emulator::Emulator() : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen) {
                              [&](void) { return m_ppu.getOAMData(); })) {
     LOG(Error) << "Critical error: Failed to set I/O callbacks" << std::endl;
   }
-
-  if (!m_bus.setWriteCallback(PPUCTRL, [&](Byte b) { m_ppu.control(b); }) ||
-      !m_bus.setWriteCallback(PPUMASK, [&](Byte b) { m_ppu.setMask(b); }) ||
-      !m_bus.setWriteCallback(OAMADDR,
-                              [&](Byte b) { m_ppu.setOAMAddress(b); }) ||
-      !m_bus.setWriteCallback(PPUADDR,
-                              [&](Byte b) { m_ppu.setDataAddress(b); }) ||
-      !m_bus.setWriteCallback(PPUSCROL, [&](Byte b) { m_ppu.setScroll(b); }) ||
-      !m_bus.setWriteCallback(PPUDATA, [&](Byte b) { m_ppu.setData(b); }) ||
-      !m_bus.setWriteCallback(OAMDMA, [&](Byte b) { DMA(b); }) ||
-      !m_bus.setWriteCallback(JOY1,
-                              [&](Byte b) {
-                                m_controller1.strobe(b);
-                                m_controller2.strobe(b);
-                              }) ||
-      !m_bus.setWriteCallback(OAMDATA, [&](Byte b) { m_ppu.setOAMData(b); })) {
-    LOG(Error) << "Critical error: Failed to set I/O callbacks" << std::endl;
-  }
-
+  m_bus.set_write_callback([&](IORegisters reg, Byte b) {
+    switch (reg) {
+    case PPUCTRL:
+      m_ppu.control(b);
+      break;
+    case PPUMASK:
+      m_ppu.setMask(b);
+      break;
+    case OAMADDR:
+      m_ppu.setOAMAddress(b);
+      break;
+    case PPUADDR:
+      m_ppu.setDataAddress(b);
+      break;
+    case PPUSCROL:
+      m_ppu.setScroll(b);
+      break;
+    case PPUDATA:
+      m_ppu.setData(b);
+      break;
+    case OAMDMA:
+      DMA(b);
+      break;
+    case JOY1:
+      m_controller1.strobe(b);
+      m_controller2.strobe(b);
+      break;
+    case OAMDATA:
+      m_ppu.setOAMData(b);
+      break;
+    default:
+      LOG(InfoVerbose) << "No write callback registered for I/O register at: "
+                       << std::hex << +reg << std::endl;
+      break;
+    }
+  });
   m_ppu.setInterruptCallback([&]() { m_cpu.interrupt(CPU::NMI); });
 }
 

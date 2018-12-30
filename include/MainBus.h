@@ -28,7 +28,7 @@ public:
   Byte read(Address addr) const;
   void write(Address addr, Byte value);
   bool setMapper(Mapper *mapper);
-  bool setWriteCallback(IORegisters reg, std::function<void(Byte)> callback);
+  void set_write_callback(std::function<void(IORegisters, Byte)>);
   bool setReadCallback(IORegisters reg, std::function<Byte(void)> callback);
   const Byte *getPagePtr(Byte page);
 
@@ -37,7 +37,7 @@ private:
   std::vector<Byte> m_extRAM;
   Mapper *m_mapper;
 
-  std::map<IORegisters, std::function<void(Byte)>> m_writeCallbacks;
+  std::function<void(IORegisters, Byte)> write_callback;
   std::map<IORegisters, std::function<Byte(void)>> m_readCallbacks;
   ;
 };

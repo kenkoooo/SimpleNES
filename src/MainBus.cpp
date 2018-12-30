@@ -52,20 +52,10 @@ void MainBus::write(Address addr, Byte value) {
   } else if (addr < 0x4020) {
     if (addr < 0x4000) { // PPU registers, mirrored
       IORegisters reg = static_cast<IORegisters>(addr & 0x2007);
-      if (this->m_writeCallbacks.count(reg) != 0) {
-        this->m_writeCallbacks[reg](value);
-      } else {
-        LOG(InfoVerbose) << "No write callback registered for I/O register at: "
-                         << std::hex << +addr << std::endl;
-      }
+      this->write_callback(reg, value);
     } else if (addr < 0x4017 && addr >= 0x4014) { // only some registers
       IORegisters reg = static_cast<IORegisters>(addr);
-      if (this->m_writeCallbacks.count(reg) != 0) {
-        this->m_writeCallbacks[reg](value);
-      } else {
-        LOG(InfoVerbose) << "No write callback registered for I/O register at: "
-                         << std::hex << +addr << std::endl;
-      }
+      this->write_callback(reg, value);
     } else {
       LOG(InfoVerbose) << "Write access attmept at: " << std::hex << +addr
                        << std::endl;
@@ -115,13 +105,8 @@ bool MainBus::setMapper(Mapper *mapper) {
   return true;
 }
 
-bool MainBus::setWriteCallback(IORegisters reg,
-                               std::function<void(Byte)> callback) {
-  if (!callback) {
-    LOG(Error) << "callback argument is nullptr" << std::endl;
-    return false;
-  }
-  return m_writeCallbacks.emplace(reg, callback).second;
+void MainBus::set_write_callback(std::function<void(IORegisters, Byte)> f) {
+  this->write_callback = f;
 }
 
 bool MainBus::setReadCallback(IORegisters reg,
