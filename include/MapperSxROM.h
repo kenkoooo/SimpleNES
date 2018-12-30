@@ -19,7 +19,7 @@ private:
   void calculatePRGPointers();
 
   std::function<void(void)> m_mirroringCallback;
-  NameTableMirroring m_mirroing;
+  NameTableMirroring m_mirroring;
 
   bool m_usesCharacterRAM;
   int m_modeCHR;

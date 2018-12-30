@@ -5,7 +5,7 @@ namespace sn {
 MapperSxROM::MapperSxROM(Cartridge &cart,
                          std::function<void(void)> mirroring_cb)
     : Mapper(cart, Mapper::SxROM), m_mirroringCallback(mirroring_cb),
-      m_mirroing(Horizontal), m_modeCHR(0), m_modePRG(3), m_tempRegister(0),
+      m_mirroring(Horizontal), m_modeCHR(0), m_modePRG(3), m_tempRegister(0),
       m_writeCounter(0), m_regPRG(0), m_regCHR0(0), m_regCHR1(0),
       m_firstBankPRG(nullptr), m_secondBankPRG(nullptr),
       m_firstBankCHR(nullptr), m_secondBankCHR(nullptr) {
@@ -32,7 +32,7 @@ Byte MapperSxROM::readPRG(Address addr) const {
     return *(m_secondBankPRG + (addr & 0x3fff));
 }
 
-NameTableMirroring MapperSxROM::getNameTableMirroring() { return m_mirroing; }
+NameTableMirroring MapperSxROM::getNameTableMirroring() { return m_mirroring; }
 
 void MapperSxROM::writePRG(Address addr, Byte value) {
   if (!(value & 0x80)) // if reset bit is NOT set
@@ -44,16 +44,16 @@ void MapperSxROM::writePRG(Address addr, Byte value) {
       if (addr <= 0x9fff) {
         switch (m_tempRegister & 0x3) {
         case 0:
-          m_mirroing = OneScreenLower;
+          m_mirroring = OneScreenLower;
           break;
         case 1:
-          m_mirroing = OneScreenHigher;
+          m_mirroring = OneScreenHigher;
           break;
         case 2:
-          m_mirroing = Vertical;
+          m_mirroring = Vertical;
           break;
         case 3:
-          m_mirroing = Horizontal;
+          m_mirroring = Horizontal;
           break;
         }
         m_mirroringCallback();
