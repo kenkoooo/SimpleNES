@@ -1,5 +1,7 @@
+#include "Controller.h"
 #include "Emulator.h"
 #include "Log.h"
+
 #include <sstream>
 #include <string>
 
@@ -22,10 +24,11 @@ int main(int argc, char **argv) {
       p2{sf::Keyboard::Numpad5, sf::Keyboard::Numpad6, sf::Keyboard::Numpad8,
          sf::Keyboard::Numpad9, sf::Keyboard::Up,      sf::Keyboard::Down,
          sf::Keyboard::Left,    sf::Keyboard::Right};
-  sn::Emulator emulator;
+  sn::Controller controller1(p1);
+  sn::Controller controller2(p2);
+  sn::Emulator emulator(controller1, controller2);
 
   std::string path = argv[1];
-  emulator.setKeys(p1, p2);
   emulator.run(path);
   return 0;
 }

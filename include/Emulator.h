@@ -17,10 +17,9 @@ const int NESVideoHeight = VisibleScanlines;
 
 class Emulator {
 public:
-  Emulator();
+  Emulator() = delete;
+  Emulator(Controller controller1, Controller controller2);
   void run(std::string rom_path);
-  void setKeys(std::vector<sf::Keyboard::Key> &p1,
-               std::vector<sf::Keyboard::Key> &p2);
 
 private:
   void DMA(Byte page);

@@ -8,7 +8,8 @@ namespace sn {
 using Byte = std::uint8_t;
 class Controller {
 public:
-  Controller();
+  Controller() = delete;
+  Controller(const std::vector<sf::Keyboard::Key> &keys);
   enum Buttons {
     A,
     B,
@@ -23,7 +24,6 @@ public:
 
   void strobe(Byte b);
   Byte read();
-  void setKeyBindings(const std::vector<sf::Keyboard::Key> &keys);
 
 private:
   bool m_strobe;

@@ -7,7 +7,9 @@
 namespace sn {
 const float ScreenScale = 2.f;
 const std::chrono::nanoseconds CpuCycleDuration = std::chrono::nanoseconds(559);
-Emulator::Emulator() : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen) {
+Emulator::Emulator(Controller controller1, Controller controller2)
+    : m_cpu(m_bus), m_ppu(m_pictureBus, m_emulatorScreen),
+      m_controller1(controller1), m_controller2(controller2) {
   if (!m_bus.setReadCallback(PPUSTATUS,
                              [&](void) { return m_ppu.getStatus(); }) ||
       !m_bus.setReadCallback(PPUDATA, [&](void) { return m_ppu.getData(); }) ||
@@ -160,12 +162,6 @@ void Emulator::DMA(Byte page) {
   m_cpu.skipDMACycles();
   auto page_ptr = m_bus.getPagePtr(page);
   m_ppu.doDMA(page_ptr);
-}
-
-void Emulator::setKeys(std::vector<sf::Keyboard::Key> &p1,
-                       std::vector<sf::Keyboard::Key> &p2) {
-  m_controller1.setKeyBindings(p1);
-  m_controller2.setKeyBindings(p2);
 }
 
 } // namespace sn
