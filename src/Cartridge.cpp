@@ -1,26 +1,17 @@
 #include "Cartridge.h"
 #include "Log.h"
+
+#include <cassert>
 #include <fstream>
 #include <string>
 
 namespace sn {
-Cartridge::Cartridge()
-    : m_nameTableMirroring(0), m_mapperNumber(0), m_extendedRAM(false) {}
-const std::vector<Byte> &Cartridge::getROM() const { return m_PRG_ROM; }
-
-const std::vector<Byte> &Cartridge::getVROM() const { return m_CHR_ROM; }
-
-Byte Cartridge::getMapper() const { return m_mapperNumber; }
-
-Byte Cartridge::getNameTableMirroring() const { return m_nameTableMirroring; }
-
-bool Cartridge::hasExtendedRAM() const { return m_extendedRAM; }
-
-bool Cartridge::loadFromFile(std::string path) {
+Cartridge::Cartridge(std::string path)
+    : m_nameTableMirroring(0), m_mapperNumber(0), m_extendedRAM(false) {
   std::ifstream romFile(path, std::ios_base::binary | std::ios_base::in);
   if (!romFile) {
     LOG(Error) << "Could not open ROM file from path: " << path << std::endl;
-    return false;
+    assert(false);
   }
 
   std::vector<Byte> header;
@@ -30,14 +21,14 @@ bool Cartridge::loadFromFile(std::string path) {
   header.resize(0x10);
   if (!romFile.read(reinterpret_cast<char *>(&header[0]), 0x10)) {
     LOG(Error) << "Reading iNES header failed." << std::endl;
-    return false;
+    assert(false);
   }
   if (std::string{&header[0], &header[4]} != "NES\x1A") {
     LOG(Error) << "Not a valid iNES image. Magic number: " << std::hex
                << header[0] << " " << header[1] << " " << header[2] << " "
                << int(header[3]) << std::endl
                << "Valid magic number : N E S 1a" << std::endl;
-    return false;
+    assert(false);
   }
 
   LOG(Info) << "Reading header, it dictates: \n";
@@ -46,7 +37,7 @@ bool Cartridge::loadFromFile(std::string path) {
   LOG(Info) << "16KB PRG-ROM Banks: " << +banks << std::endl;
   if (!banks) {
     LOG(Error) << "ROM has no PRG-ROM banks. Loading ROM failed." << std::endl;
-    return false;
+    assert(false);
   }
 
   Byte vbanks = header[5];
@@ -64,20 +55,22 @@ bool Cartridge::loadFromFile(std::string path) {
 
   if (header[6] & 0x4) {
     LOG(Error) << "Trainer is not supported." << std::endl;
-    return false;
+    assert(false);
   }
 
   if ((header[0xA] & 0x3) == 0x2 || (header[0xA] & 0x1)) {
     LOG(Error) << "PAL ROM not supported." << std::endl;
-    return false;
-  } else
+    assert(false);
+
+  } else {
     LOG(Info) << "ROM is NTSC compatible.\n";
+  }
 
   // PRG-ROM 16KB banks
   m_PRG_ROM.resize(0x4000 * banks);
   if (!romFile.read(reinterpret_cast<char *>(&m_PRG_ROM[0]), 0x4000 * banks)) {
     LOG(Error) << "Reading PRG-ROM from image file failed." << std::endl;
-    return false;
+    assert(false);
   }
 
   // CHR-ROM 8KB banks
@@ -86,10 +79,21 @@ bool Cartridge::loadFromFile(std::string path) {
     if (!romFile.read(reinterpret_cast<char *>(&m_CHR_ROM[0]),
                       0x2000 * vbanks)) {
       LOG(Error) << "Reading CHR-ROM from image file failed." << std::endl;
-      return false;
+      assert(false);
     }
-  } else
+  } else {
     LOG(Info) << "Cartridge with CHR-RAM." << std::endl;
-  return true;
+  }
 }
-} // namespace sn
+
+const std::vector<Byte> &Cartridge::getROM() const { return m_PRG_ROM; }
+
+const std::vector<Byte> &Cartridge::getVROM() const { return m_CHR_ROM; }
+
+Byte Cartridge::getMapper() const { return m_mapperNumber; }
+
+Byte Cartridge::getNameTableMirroring() const { return m_nameTableMirroring; }
+
+bool Cartridge::hasExtendedRAM() const { return m_extendedRAM; }
+
+}  // namespace sn

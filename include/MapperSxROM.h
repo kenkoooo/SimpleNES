@@ -4,7 +4,7 @@
 
 namespace sn {
 class MapperSxROM : public Mapper {
-public:
+ public:
   MapperSxROM(Cartridge &cart, std::function<void(void)> mirroring_cb);
   void writePRG(Address addr, Byte value) override;
   Byte readPRG(Address addr) const override;
@@ -13,9 +13,9 @@ public:
   Byte readCHR(Address addr) const override;
   void writeCHR(Address addr, Byte value) override;
 
-  NameTableMirroring getNameTableMirroring() override;
+  NameTableMirroring getNameTableMirroring() const override;
 
-private:
+ private:
   void calculatePRGPointers();
 
   std::function<void(void)> m_mirroringCallback;
@@ -40,5 +40,5 @@ private:
 
   std::vector<Byte> m_characterRAM;
 };
-} // namespace sn
-#endif // MAPPERSXROM_H
+}  // namespace sn
+#endif  // MAPPERSXROM_H

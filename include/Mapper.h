@@ -1,8 +1,8 @@
 #ifndef MAPPER_H
 #define MAPPER_H
-#include "Cartridge.h"
 #include <functional>
 #include <memory>
+#include "Cartridge.h"
 
 namespace sn {
 enum NameTableMirroring {
@@ -14,7 +14,7 @@ enum NameTableMirroring {
 };
 
 class Mapper {
-public:
+ public:
   enum Type {
     NROM = 0,
     SxROM = 1,
@@ -25,23 +25,22 @@ public:
   Mapper(Cartridge &cart, Type t) : m_cartridge(cart), m_type(t){};
   virtual void writePRG(Address addr, Byte value) = 0;
   virtual Byte readPRG(Address addr) const = 0;
-  virtual const Byte *getPagePtr(Address addr) const = 0; // for DMAs
+  virtual const Byte *getPagePtr(Address addr) const = 0;  // for DMAs
 
   virtual Byte readCHR(Address addr) const = 0;
   virtual void writeCHR(Address addr, Byte value) = 0;
 
-  virtual NameTableMirroring getNameTableMirroring();
+  virtual NameTableMirroring getNameTableMirroring() const;
 
   bool inline hasExtendedRAM() { return m_cartridge.hasExtendedRAM(); }
 
-  static std::unique_ptr<Mapper>
-  createMapper(Type mapper_t, Cartridge &cart,
-               std::function<void(void)> mirroring_cb);
+  static std::unique_ptr<Mapper> createMapper(
+      Type mapper_t, Cartridge &cart, std::function<void(void)> mirroring_cb);
 
-protected:
+ protected:
   Cartridge &m_cartridge;
   Type m_type;
 };
-} // namespace sn
+}  // namespace sn
 
-#endif // MAPPER_H
+#endif  // MAPPER_H

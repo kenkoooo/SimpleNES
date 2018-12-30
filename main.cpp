@@ -27,8 +27,7 @@ int main(int argc, char **argv) {
          sf::Keyboard::Left,    sf::Keyboard::Right};
   sn::Controller controller1(p1);
   sn::Controller controller2(p2);
-  sn::Cartridge cartridge;
-  cartridge.loadFromFile(argv[1]);
+  sn::Cartridge cartridge(argv[1]);
 
   sn::Emulator emulator(controller1, controller2, cartridge);
   emulator.run();

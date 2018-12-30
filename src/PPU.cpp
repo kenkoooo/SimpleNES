@@ -2,9 +2,8 @@
 #include "Log.h"
 
 namespace sn {
-PPU::PPU(PictureBus &bus)
-    : m_bus(bus),
-      m_spriteMemory(64 * 4),
+PPU::PPU()
+    : m_spriteMemory(64 * 4),
       m_pictureBuffer(
           ScanlineVisibleDots,
           std::vector<sf::Color>(VisibleScanlines, sf::Color::Magenta)) {

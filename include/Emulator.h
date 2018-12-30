@@ -7,7 +7,6 @@
 #include "Controller.h"
 #include "MainBus.h"
 #include "PPU.h"
-#include "PictureBus.h"
 
 namespace sn {
 using TimePoint = std::chrono::high_resolution_clock::time_point;
@@ -23,7 +22,6 @@ class Emulator {
 
  private:
   MainBus m_bus;
-  PictureBus m_pictureBus;
   CPU m_cpu;
   PPU m_ppu;
   Cartridge m_cartridge;

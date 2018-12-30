@@ -10,8 +10,7 @@ using Address = std::uint16_t;
 
 class Cartridge {
  public:
-  Cartridge();
-  bool loadFromFile(std::string path);
+  Cartridge(std::string path);
   const std::vector<Byte> &getROM() const;
   const std::vector<Byte> &getVROM() const;
   Byte getMapper() const;

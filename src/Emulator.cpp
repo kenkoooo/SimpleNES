@@ -2,6 +2,7 @@
 #include "Log.h"
 
 #include <chrono>
+#include <memory>
 #include <thread>
 
 namespace sn {
@@ -10,7 +11,6 @@ const std::chrono::nanoseconds CpuCycleDuration = std::chrono::nanoseconds(559);
 Emulator::Emulator(Controller controller1, Controller controller2,
                    Cartridge cartridge)
     : m_cpu(m_bus),
-      m_ppu(m_pictureBus),
       m_controller1(controller1),
       m_controller2(controller2),
       m_cartridge(cartridge) {
@@ -24,14 +24,14 @@ void Emulator::run() {
 
   m_mapper = Mapper::createMapper(
       static_cast<Mapper::Type>(m_cartridge.getMapper()), m_cartridge,
-      [&]() { m_pictureBus.updateMirroring(); });
+      [&]() { this->m_ppu.m_bus.updateMirroring(); });
   if (!m_mapper) {
     LOG(Error) << "Creating Mapper failed. Probably unsupported." << std::endl;
     return;
   }
 
   if (!m_bus.setMapper(m_mapper.get()) ||
-      !m_pictureBus.setMapper(m_mapper.get()))
+      !this->m_ppu.m_bus.setMapper(m_mapper.get()))
     return;
 
   m_cpu.reset();
