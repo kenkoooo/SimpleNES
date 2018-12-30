@@ -51,21 +51,18 @@ void MainBus::write(Address addr, Byte value) {
     m_RAM[addr & 0x7ff] = value;
   } else if (addr < 0x4020) {
     if (addr < 0x4000) { // PPU registers, mirrored
-      auto it = m_writeCallbacks.find(static_cast<IORegisters>(addr & 0x2007));
-      if (it != m_writeCallbacks.end())
-        (it->second)(value);
-      // Second object is the pointer to the function object
-      // Dereference the function pointer and call it
-      else
+      IORegisters reg = static_cast<IORegisters>(addr & 0x2007);
+      if (this->m_writeCallbacks.count(reg) != 0) {
+        this->m_writeCallbacks[reg](value);
+      } else {
         LOG(InfoVerbose) << "No write callback registered for I/O register at: "
                          << std::hex << +addr << std::endl;
+      }
     } else if (addr < 0x4017 && addr >= 0x4014) { // only some registers
-      auto it = m_writeCallbacks.find(static_cast<IORegisters>(addr));
-      if (it != m_writeCallbacks.end()) {
-        (it->second)(value);
-      } // Second object is the pointer to the function object
-        // Dereference the function pointer and call it
-      else {
+      IORegisters reg = static_cast<IORegisters>(addr);
+      if (this->m_writeCallbacks.count(reg) != 0) {
+        this->m_writeCallbacks[reg](value);
+      } else {
         LOG(InfoVerbose) << "No write callback registered for I/O register at: "
                          << std::hex << +addr << std::endl;
       }
