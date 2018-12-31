@@ -66,7 +66,7 @@ void MapperSxROM::writePRG(Address addr, Byte value) {
             m_mirroring = Horizontal;
             break;
         }
-        m_mirroringCallback();
+        // m_mirroringCallback();
 
         m_modeCHR = (m_tempRegister & 0x10) >> 4;
         m_modePRG = (m_tempRegister & 0xc) >> 2;

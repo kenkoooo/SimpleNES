@@ -118,6 +118,9 @@ void MainBus::write(Address addr, Byte value) {
     }
   } else {
     m_mapper->writePRG(addr, value);
+    if (m_mapper->m_type == Mapper::SxROM) {
+      this->ppu->m_bus.updateMirroring();
+    }
   }
 }
 

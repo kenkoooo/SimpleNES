@@ -36,9 +36,10 @@ class Mapper {
   static std::unique_ptr<Mapper> createMapper(
       Cartridge &cart, std::function<void(void)> mirroring_cb);
 
+  Type m_type;
+
  protected:
   Cartridge &m_cartridge;
-  Type m_type;
 };
 }  // namespace sn
 
