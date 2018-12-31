@@ -31,8 +31,8 @@ class MapperSxROM : public Mapper {
   Byte m_regCHR0;
   Byte m_regCHR1;
 
-  const Byte *m_firstBankPRG;
-  const Byte *m_secondBankPRG;
+  std::size_t m_firstBankPRG;
+  std::size_t m_secondBankPRG;
 
   const Byte *m_firstBankCHR;
   const Byte *m_secondBankCHR;

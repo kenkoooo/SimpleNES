@@ -14,8 +14,8 @@ MapperSxROM::MapperSxROM(Cartridge &cart,
       m_regPRG(0),
       m_regCHR0(0),
       m_regCHR1(0),
-      m_firstBankPRG(nullptr),
-      m_secondBankPRG(nullptr),
+      m_firstBankPRG(0),
+      m_secondBankPRG(0),
       m_firstBankCHR(nullptr),
       m_secondBankCHR(nullptr) {
   if (cart.getVROM().size() == 0) {
@@ -29,16 +29,16 @@ MapperSxROM::MapperSxROM(Cartridge &cart,
     m_secondBankCHR = &cart.getVROM()[0x1000 * m_regCHR1];
   }
 
-  m_firstBankPRG = &cart.getROM()[0];  // first bank
-  m_secondBankPRG = &cart.getROM()[cart.getROM().size() -
-                                   0x4000 /*0x2000 * 0x0e*/];  // last bank
+  m_firstBankPRG = 0;                               // first bank
+  m_secondBankPRG = cart.getROM().size() - 0x4000;  // last bank
 }
 
 Byte MapperSxROM::readPRG(Address addr) const {
-  if (addr < 0xc000)
-    return *(m_firstBankPRG + (addr & 0x3fff));
-  else
-    return *(m_secondBankPRG + (addr & 0x3fff));
+  if (addr < 0xc000) {
+    return this->m_cartridge.getROM()[m_firstBankPRG + (addr & 0x3fff)];
+  } else {
+    return this->m_cartridge.getROM()[m_secondBankPRG + (addr & 0x3fff)];
+  }
 }
 
 NameTableMirroring MapperSxROM::getNameTableMirroring() const {
@@ -124,35 +124,35 @@ void MapperSxROM::calculatePRGPointers() {
   if (m_modePRG <= 1)  // 32KB changeable
   {
     // equivalent to multiplying 0x8000 * (m_regPRG >> 1)
-    m_firstBankPRG = &m_cartridge.getROM()[0x4000 * (m_regPRG & ~1)];
+    m_firstBankPRG = 0x4000 * (m_regPRG & ~1);
     m_secondBankPRG = m_firstBankPRG + 0x4000;  // add 16KB
   } else if (m_modePRG == 2)                    // fix first switch second
   {
-    m_firstBankPRG = &m_cartridge.getROM()[0];
+    m_firstBankPRG = 0;
     m_secondBankPRG = m_firstBankPRG + 0x4000 * m_regPRG;
   } else  // switch first fix second
   {
-    m_firstBankPRG = &m_cartridge.getROM()[0x4000 * m_regPRG];
-    m_secondBankPRG =
-        &m_cartridge
-             .getROM()[m_cartridge.getROM().size() - 0x4000 /*0x2000 * 0x0e*/];
+    m_firstBankPRG = 0x4000 * m_regPRG;
+    m_secondBankPRG = m_cartridge.getROM().size() - 0x4000;
   }
 }
 
 Byte MapperSxROM::readCHR(Address addr) const {
-  if (m_usesCharacterRAM)
+  if (m_usesCharacterRAM) {
     return m_characterRAM[addr];
-  else if (addr < 0x1000)
+  } else if (addr < 0x1000) {
     return *(m_firstBankCHR + addr);
-  else
+  } else {
     return *(m_secondBankCHR + (addr & 0xfff));
+  }
 }
 
 void MapperSxROM::writeCHR(Address addr, Byte value) {
-  if (m_usesCharacterRAM)
+  if (m_usesCharacterRAM) {
     m_characterRAM[addr] = value;
-  else
+  } else {
     LOG(Info) << "Read-only CHR memory write attempt at " << std::hex << addr
               << std::endl;
+  }
 }
 }  // namespace sn
