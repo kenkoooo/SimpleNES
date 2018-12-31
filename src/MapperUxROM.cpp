@@ -11,7 +11,7 @@ MapperUxROM::MapperUxROM(Cartridge &cart)
   } else
     m_usesCharacterRAM = false;
 
-  m_lastBankPtr = &cart.getROM()[cart.getROM().size() - 0x4000];  // last - 16KB
+  m_lastBankPtr = cart.getROM().size() - 0x4000;  // last - 16KB
 }
 
 Byte MapperUxROM::readPRG(Address addr) const {
@@ -19,7 +19,7 @@ Byte MapperUxROM::readPRG(Address addr) const {
     return m_cartridge
         .getROM()[((addr - 0x8000) & 0x3fff) | (m_selectPRG << 14)];
   else
-    return *(m_lastBankPtr + (addr & 0x3fff));
+    return this->m_cartridge.getROM()[m_lastBankPtr + (addr & 0x3fff)];
 }
 
 void MapperUxROM::writePRG(Address addr, Byte value) { m_selectPRG = value; }

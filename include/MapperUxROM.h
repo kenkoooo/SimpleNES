@@ -15,7 +15,7 @@ class MapperUxROM : public Mapper {
  private:
   bool m_usesCharacterRAM;
 
-  const Byte *m_lastBankPtr;
+  std::size_t m_lastBankPtr;
   Address m_selectPRG;
 
   std::vector<Byte> m_characterRAM;
