@@ -4,20 +4,19 @@
 
 namespace sn {
 class MapperNROM : public Mapper {
-public:
+ public:
   MapperNROM(Cartridge &cart);
   void writePRG(Address addr, Byte value) override;
   Byte readPRG(Address addr) const override;
-  const Byte *getPagePtr(Address addr) const override;
 
   Byte readCHR(Address addr) const override;
   void writeCHR(Address addr, Byte value) override;
 
-private:
+ private:
   bool m_oneBank;
   bool m_usesCharacterRAM;
 
   std::vector<Byte> m_characterRAM;
 };
-} // namespace sn
-#endif // MAPPERNROM_H
+}  // namespace sn
+#endif  // MAPPERNROM_H

@@ -4,16 +4,15 @@
 
 namespace sn {
 class MapperUxROM : public Mapper {
-public:
+ public:
   MapperUxROM(Cartridge &cart);
   void writePRG(Address addr, Byte value) override;
   Byte readPRG(Address addr) const override;
-  const Byte *getPagePtr(Address addr) const override;
 
   Byte readCHR(Address addr) const override;
   void writeCHR(Address addr, Byte value) override;
 
-private:
+ private:
   bool m_usesCharacterRAM;
 
   const Byte *m_lastBankPtr;
@@ -21,5 +20,5 @@ private:
 
   std::vector<Byte> m_characterRAM;
 };
-} // namespace sn
-#endif // MAPPERUXROM_H
+}  // namespace sn
+#endif  // MAPPERUXROM_H

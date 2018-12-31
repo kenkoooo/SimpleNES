@@ -25,13 +25,6 @@ void MapperNROM::writePRG(Address addr, Byte value) {
                    << +value << std::endl;
 }
 
-const Byte *MapperNROM::getPagePtr(Address addr) const {
-  if (!m_oneBank)
-    return &m_cartridge.getROM()[addr - 0x8000];
-  else  // mirrored
-    return &m_cartridge.getROM()[(addr - 0x8000) & 0x3fff];
-}
-
 Byte MapperNROM::readCHR(Address addr) const {
   if (m_usesCharacterRAM)
     return m_characterRAM[addr];
