@@ -16,8 +16,8 @@ MapperSxROM::MapperSxROM(Cartridge &cart,
       m_regCHR1(0),
       m_firstBankPRG(0),
       m_secondBankPRG(0),
-      m_firstBankCHR(nullptr),
-      m_secondBankCHR(nullptr) {
+      m_firstBankCHR(0),
+      m_secondBankCHR(0) {
   if (cart.getVROM().size() == 0) {
     m_usesCharacterRAM = true;
     m_characterRAM.resize(0x2000);
@@ -25,8 +25,8 @@ MapperSxROM::MapperSxROM(Cartridge &cart,
   } else {
     LOG(Info) << "Using CHR-ROM" << std::endl;
     m_usesCharacterRAM = false;
-    m_firstBankCHR = &cart.getVROM()[0];
-    m_secondBankCHR = &cart.getVROM()[0x1000 * m_regCHR1];
+    m_firstBankCHR = 0;
+    m_secondBankCHR = 0x1000 * m_regCHR1;
   }
 
   m_firstBankPRG = 0;                               // first bank
@@ -76,27 +76,22 @@ void MapperSxROM::writePRG(Address addr, Byte value) {
         // Recalculate CHR pointers
         if (m_modeCHR == 0)  // one 8KB bank
         {
-          m_firstBankCHR =
-              &m_cartridge
-                   .getVROM()[0x1000 * (m_regCHR0 | 1)];  // ignore last bit
+          m_firstBankCHR = 0x1000 * (m_regCHR0 | 1);  // ignore last bit
           m_secondBankCHR = m_firstBankCHR + 0x1000;
         } else  // two 4KB banks
         {
-          m_firstBankCHR = &m_cartridge.getVROM()[0x1000 * m_regCHR0];
-          m_secondBankCHR = &m_cartridge.getVROM()[0x1000 * m_regCHR1];
+          m_firstBankCHR = 0x1000 * m_regCHR0;
+          m_secondBankCHR = 0x1000 * m_regCHR1;
         }
       } else if (addr <= 0xbfff)  // CHR Reg 0
       {
         m_regCHR0 = m_tempRegister;
         m_firstBankCHR =
-            &m_cartridge
-                 .getVROM()[0x1000 * (m_tempRegister |
-                                      (1 - m_modeCHR))];  // OR 1 if 8KB mode
+            0x1000 * (m_tempRegister | (1 - m_modeCHR));  // OR 1 if 8KB mode
         if (m_modeCHR == 0) m_secondBankCHR = m_firstBankCHR + 0x1000;
       } else if (addr <= 0xdfff) {
         m_regCHR1 = m_tempRegister;
-        if (m_modeCHR == 1)
-          m_secondBankCHR = &m_cartridge.getVROM()[0x1000 * m_tempRegister];
+        if (m_modeCHR == 1) m_secondBankCHR = 0x1000 * m_tempRegister;
       } else {
         // TODO PRG-RAM
         if ((m_tempRegister & 0x10) == 0x10) {
@@ -141,9 +136,9 @@ Byte MapperSxROM::readCHR(Address addr) const {
   if (m_usesCharacterRAM) {
     return m_characterRAM[addr];
   } else if (addr < 0x1000) {
-    return *(m_firstBankCHR + addr);
+    return this->m_cartridge.getVROM()[m_firstBankCHR + addr];
   } else {
-    return *(m_secondBankCHR + (addr & 0xfff));
+    return this->m_cartridge.getVROM()[m_secondBankCHR + (addr & 0xfff)];
   }
 }
 
