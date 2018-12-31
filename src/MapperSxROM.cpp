@@ -46,8 +46,7 @@ NameTableMirroring MapperSxROM::getNameTableMirroring() const {
 }
 
 void MapperSxROM::writePRG(Address addr, Byte value) {
-  if (!(value & 0x80))  // if reset bit is NOT set
-  {
+  if (!(value & 0x80)) {  // if reset bit is NOT set
     m_tempRegister = (m_tempRegister >> 1) | ((value & 1) << 4);
     ++m_writeCounter;
 
@@ -74,8 +73,7 @@ void MapperSxROM::writePRG(Address addr, Byte value) {
         calculatePRGPointers();
 
         // Recalculate CHR pointers
-        if (m_modeCHR == 0)  // one 8KB bank
-        {
+        if (m_modeCHR == 0) {                         // one 8KB bank
           m_firstBankCHR = 0x1000 * (m_regCHR0 | 1);  // ignore last bit
           m_secondBankCHR = m_firstBankCHR + 0x1000;
         } else  // two 4KB banks
@@ -83,8 +81,7 @@ void MapperSxROM::writePRG(Address addr, Byte value) {
           m_firstBankCHR = 0x1000 * m_regCHR0;
           m_secondBankCHR = 0x1000 * m_regCHR1;
         }
-      } else if (addr <= 0xbfff)  // CHR Reg 0
-      {
+      } else if (addr <= 0xbfff) {  // CHR Reg 0
         m_regCHR0 = m_tempRegister;
         m_firstBankCHR =
             0x1000 * (m_tempRegister | (1 - m_modeCHR));  // OR 1 if 8KB mode
@@ -106,8 +103,7 @@ void MapperSxROM::writePRG(Address addr, Byte value) {
       m_tempRegister = 0;
       m_writeCounter = 0;
     }
-  } else  // reset
-  {
+  } else {  // reset
     m_tempRegister = 0;
     m_writeCounter = 0;
     m_modePRG = 3;
@@ -116,17 +112,14 @@ void MapperSxROM::writePRG(Address addr, Byte value) {
 }
 
 void MapperSxROM::calculatePRGPointers() {
-  if (m_modePRG <= 1)  // 32KB changeable
-  {
+  if (m_modePRG <= 1) {  // 32KB changeable
     // equivalent to multiplying 0x8000 * (m_regPRG >> 1)
     m_firstBankPRG = 0x4000 * (m_regPRG & ~1);
     m_secondBankPRG = m_firstBankPRG + 0x4000;  // add 16KB
-  } else if (m_modePRG == 2)                    // fix first switch second
-  {
+  } else if (m_modePRG == 2) {                  // fix first switch second
     m_firstBankPRG = 0;
     m_secondBankPRG = m_firstBankPRG + 0x4000 * m_regPRG;
-  } else  // switch first fix second
-  {
+  } else {  // switch first fix second
     m_firstBankPRG = 0x4000 * m_regPRG;
     m_secondBankPRG = m_cartridge.getROM().size() - 0x4000;
   }
