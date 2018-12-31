@@ -3,13 +3,7 @@
 
 namespace sn {
 MapperNROM::MapperNROM(Cartridge &cart) : Mapper(cart, Mapper::NROM) {
-  if (cart.getROM().size() == 0x4000) // 1 bank
-  {
-    m_oneBank = true;
-  } else // 2 banks
-  {
-    m_oneBank = false;
-  }
+  m_oneBank = cart.getROM().size() == 0x4000;
 
   if (cart.getVROM().size() == 0) {
     m_usesCharacterRAM = true;
@@ -22,7 +16,7 @@ MapperNROM::MapperNROM(Cartridge &cart) : Mapper(cart, Mapper::NROM) {
 Byte MapperNROM::readPRG(Address addr) const {
   if (!m_oneBank)
     return m_cartridge.getROM()[addr - 0x8000];
-  else // mirrored
+  else  // mirrored
     return m_cartridge.getROM()[(addr - 0x8000) & 0x3fff];
 }
 
@@ -34,7 +28,7 @@ void MapperNROM::writePRG(Address addr, Byte value) {
 const Byte *MapperNROM::getPagePtr(Address addr) const {
   if (!m_oneBank)
     return &m_cartridge.getROM()[addr - 0x8000];
-  else // mirrored
+  else  // mirrored
     return &m_cartridge.getROM()[(addr - 0x8000) & 0x3fff];
 }
 
@@ -52,4 +46,4 @@ void MapperNROM::writeCHR(Address addr, Byte value) {
     LOG(Info) << "Read-only CHR memory write attempt at " << std::hex << addr
               << std::endl;
 }
-} // namespace sn
+}  // namespace sn

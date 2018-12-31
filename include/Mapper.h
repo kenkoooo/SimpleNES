@@ -35,7 +35,7 @@ class Mapper {
   bool inline hasExtendedRAM() { return m_cartridge.hasExtendedRAM(); }
 
   static std::unique_ptr<Mapper> createMapper(
-      Type mapper_t, Cartridge &cart, std::function<void(void)> mirroring_cb);
+      Cartridge &cart, std::function<void(void)> mirroring_cb);
 
  protected:
   Cartridge &m_cartridge;

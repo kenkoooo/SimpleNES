@@ -23,8 +23,7 @@ void Emulator::run() {
   this->m_bus.set_controller(&this->m_controller1, &this->m_controller2);
 
   m_mapper = Mapper::createMapper(
-      static_cast<Mapper::Type>(m_cartridge.getMapper()), m_cartridge,
-      [&]() { this->m_ppu.m_bus.updateMirroring(); });
+      m_cartridge, [&]() { this->m_ppu.m_bus.updateMirroring(); });
   if (!m_mapper) {
     LOG(Error) << "Creating Mapper failed. Probably unsupported." << std::endl;
     return;

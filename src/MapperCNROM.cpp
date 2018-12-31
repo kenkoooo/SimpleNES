@@ -19,10 +19,11 @@ void MapperCNROM::writePRG(Address addr, Byte value) {
 }
 
 const Byte *MapperCNROM::getPagePtr(Address addr) const {
-  if (!m_oneBank)
+  if (!m_oneBank) {
     return &m_cartridge.getROM()[addr - 0x8000];
-  else  // mirrored
+  } else {  // mirrored
     return &m_cartridge.getROM()[(addr - 0x8000) & 0x3fff];
+  }
 }
 
 Byte MapperCNROM::readCHR(Address addr) const {
